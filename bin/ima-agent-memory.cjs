@@ -5,7 +5,7 @@ const { parseArgs } = require('node:util');
 const config = require('../lib/config.cjs');
 const { LocalStore } = require('../lib/store.cjs');
 const { ImaStore } = require('../lib/ima.cjs');
-const HELP = `ima-agent-memory 0.1.0 (Node >=22)
+const HELP = `ima-agent-memory 0.1.1 (Node >=22)
 
 init [--project demo] [--name "Demo project"]  Create an empty LOCAL memory home
 current [--project ID|all]                    Show the current manifest

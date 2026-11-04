@@ -1,7 +1,7 @@
 {
   "name": "ima-agent-memory",
-  "version": "0.1.0",
-  "description": "Project-scoped memory with provenance for multiple agents, with optional ima sync and MCP stdio tools.",
+  "version": "0.1.1",
+  "description": "Give your agents one shared brain: project memory across Codex, WorkBuddy and other configured MCP/CLI clients.",
   "license": "MIT",
   "type": "commonjs",
   "engines": { "node": ">=22" },

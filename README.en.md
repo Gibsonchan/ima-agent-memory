@@ -1,7 +1,19 @@
 # ima-agent-memory
 
-Project-scoped memory shared by multiple AI agents, with sourced candidate events,
-local Markdown, optional ima snapshots and MCP stdio tools.
+## Give your agents one shared brain
+
+**Switch agents without explaining your project all over again.**
+
+Plan in Codex, organize material in WorkBuddy, then continue in another agent.
+Your project goals, preferences and confirmed decisions should travel with you.
+ima-agent-memory keeps them in one maintained, project-scoped memory that agents
+can read and contribute to through a Skill, MCP or the CLI.
+
+It helps when context is scattered across long chats, decisions get lost during
+handoffs, or moving between computers means rebuilding the same background.
+The shared brain is a common memory: submissions remain candidates until reviewed
+and incorporated into a maintained summary. A private local home works on one
+machine; optional ima snapshots let other configured machines read those summaries.
 
 [中文](README.md) · [Integration and maintenance](docs/integration.md) · [Security](SECURITY.md)
 
@@ -9,7 +21,27 @@ Requires Node.js 22+. No runtime npm dependencies. Runtime data lives outside th
 source repository. Initialization creates empty templates: it does not import chat
 history, connect an account or upload anything.
 
-For WorkBuddy, import the release's `ima-agent-memory-workbuddy-v0.1.0.zip` through
+## Agents and integration scope
+
+| Agent / client | Integration route | Deliverable |
+| --- | --- | --- |
+| Codex | MCP stdio or CLI plus startup rules | Generic MCP configuration generator and AGENTS snippet |
+| WorkBuddy | Skill ZIP / CLI; optional MCP configuration | Self-contained skill with offline packaging checks |
+| DeepSeek Harness (DSH) | stdio MCP client plugin or CLI | Generic server; configure for the installed DSH version |
+| Claude Code | Local stdio MCP or CLI | Generic integration route; client validation pending |
+| Cursor | Local stdio MCP or CLI | Generic integration route; client validation pending |
+
+This public version has not been end-to-end tested in every listed client. Local
+CLI operations, MCP protocol exchange, extracted skill execution and Windows/Linux
+CI are verified. WorkBuddy UI import and individual client versions still need
+validation. See [integration scope and official references](references/agents.md).
+
+For example, an agent proposes a sourced project decision, a maintainer verifies it
+and updates the summary, and another configured agent reads that same summary when
+it takes over. Startup instructions must request memory reads; other machines see
+cloud changes after synchronization.
+
+For WorkBuddy, import the release's `ima-agent-memory-workbuddy-v0.1.1.zip` through
 Skills → Add Skill → Upload Skill. It includes a root-level `SKILL.md`, runtime
 code and empty templates; Node 22+ is still required. Importing it does not run
 initialization or upload data. See [integration notes](references/workbuddy.md).

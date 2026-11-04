@@ -1,13 +1,16 @@
 ---
 name: ima-agent-memory
-description: 按项目读取和维护多个 AI agent 共用的长期记忆，保留来源并区分候选与正式摘要，支持本地 Markdown 和可选 ima 同步。当用户要求记住项目决定、恢复项目背景、查询共享记忆或接入跨 agent 记忆时使用。普通 ima 笔记与文件管理使用官方 ima 技能。
+description: 让 Codex、WorkBuddy、DeepSeek Harness 等 Agent 共享同一份项目记忆，减少换工具时重复交代背景。当用户要求记住项目决定、恢复上下文、查询共享记忆或接入跨 Agent 长期记忆时使用，支持本地 Markdown、可选 ima 同步及 MCP/CLI 接入。普通 ima 笔记与文件管理使用官方 ima 技能。
 license: MIT
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
   runtime: "Node.js 22+"
 ---
 
 # 跨 Agent 项目记忆
+
+让不同 Agent 共用一份按项目维护的记忆，接手时沿用已经核实的背景、偏好和决定。
+客户端接入方式与验证状态见 [references/agents.md](references/agents.md)。
 
 本包自带运行代码，无需 npm install 或访问 GitHub。需要 Node.js 22+。
 所有命令相对于本技能根目录；从本次加载的 SKILL.md 路径定位根目录，

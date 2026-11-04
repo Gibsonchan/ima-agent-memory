@@ -3,7 +3,7 @@
 ## 导入这个技能
 
 在 WorkBuddy 的技能页面选择「添加技能 → 上传技能」，选择
-`ima-agent-memory-workbuddy-v0.1.0.zip`，完成客户端的安全检查后导入。
+`ima-agent-memory-workbuddy-v0.1.1.zip`，完成客户端的安全检查后导入。
 不同版本的界面标签可能略有不同。
 
 导入 ZIP 只安装文件，不会运行初始化或上传任何记忆。第一次调用时，
