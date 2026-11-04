@@ -6,6 +6,17 @@
 
 代码和个人记忆分开存放。首次初始化只生成空白模板，不读取聊天历史，不连接账号，不上传内容。Node.js 22 或更高版本；没有 npm 运行时依赖。
 
+## WorkBuddy 技能包
+
+本仓库包含 [SKILL.md](SKILL.md)，可通过发行时提供的
+`ima-agent-memory-workbuddy-v0.1.0.zip` 导入 WorkBuddy：技能 → 添加技能 → 上传技能。
+ZIP 根目录直接包含 SKILL.md，并自带运行代码和空白模板；无需访问 GitHub 或 npm install。
+需要使用者环境提供 Node.js 22+。ima 云端模式另需使用者自己的凭证和官方 ima-skill。
+导入不会自动运行初始化或上传数据，使用说明见 [WorkBuddy 接入](references/workbuddy.md)。
+
+自行打包：`node scripts/build-skill.cjs --output <仓库外的ZIP路径>`。
+技能文件和账号/记忆数据分开，升级或卸载技能不删除私有记忆。
+
 ## 它解决什么问题
 
 - 多个 agent 按同一项目读取维护好的摘要，减少重复交代背景。

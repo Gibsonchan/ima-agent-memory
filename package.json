@@ -6,7 +6,7 @@
   "type": "commonjs",
   "engines": { "node": ">=22" },
   "bin": { "ima-agent-memory": "bin/ima-agent-memory.cjs" },
-  "files": ["bin/", "lib/", "templates/", "examples/", "docs/", "README.md", "README.en.md", "LICENSE", "SECURITY.md"],
+  "files": ["bin/", "lib/", "templates/", "examples/", "docs/", "references/", "scripts/memory.cjs", "scripts/doctor.cjs", "SKILL.md", "README.md", "README.en.md", "LICENSE", "SECURITY.md"],
   "scripts": {
     "test": "node --test",
     "check:privacy": "node scripts/check-privacy.cjs",

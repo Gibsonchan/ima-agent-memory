@@ -9,6 +9,12 @@ Requires Node.js 22+. No runtime npm dependencies. Runtime data lives outside th
 source repository. Initialization creates empty templates: it does not import chat
 history, connect an account or upload anything.
 
+For WorkBuddy, import the release's `ima-agent-memory-workbuddy-v0.1.0.zip` through
+Skills → Add Skill → Upload Skill. It includes a root-level `SKILL.md`, runtime
+code and empty templates; Node 22+ is still required. Importing it does not run
+initialization or upload data. See [integration notes](references/workbuddy.md).
+Build it with `node scripts/build-skill.cjs --output <ZIP-outside-repository>`.
+
 ## Local quick start
 
 Download and extract this repository, then run from its directory:
