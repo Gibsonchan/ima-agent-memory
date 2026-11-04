@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "agent_memory": {
+      "command": "node",
+      "args": ["/absolute/path/to/ima-agent-memory/bin/ima-agent-memory.cjs", "serve"],
+      "env": { "IMA_MEMORY_HOME": "/absolute/path/to/private-memory-home" }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "project": "demo",
+  "agent": "example-agent",
+  "subject": "documentation.language",
+  "kind": "decision",
+  "evidence_type": "user_statement",
+  "summary": "Fictional example: publish the demo documentation in two languages.",
+  "source": "Synthetic fixture for the quick start; not a real user conversation."
+}

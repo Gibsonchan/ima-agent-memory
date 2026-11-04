@@ -1,0 +1,22 @@
+# Runtime data must live outside this repository.
+/data/
+/.memory/
+/curated/
+/evidence/
+/inbox/
+/config.json
+/CURRENT.md
+/*-state.json
+*.db
+*.sqlite*
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.log
+*.tgz
+node_modules/
+coverage/
+.DS_Store
+Thumbs.db

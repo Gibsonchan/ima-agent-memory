@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "backend": "local",
+  "namespace": "agentmemory",
+  "memory_space_id": "00000000-0000-4000-8000-000000000000",
+  "knowledge_base_id": "",
+  "projects": [{ "id": "demo", "name": "Demo project" }]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "ima-agent-memory",
+  "version": "0.1.0",
+  "description": "Project-scoped memory with provenance for multiple agents, with optional ima sync and MCP stdio tools.",
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": { "node": ">=22" },
+  "bin": { "ima-agent-memory": "bin/ima-agent-memory.cjs" },
+  "files": ["bin/", "lib/", "templates/", "examples/", "docs/", "README.md", "README.en.md", "LICENSE", "SECURITY.md"],
+  "scripts": {
+    "test": "node --test",
+    "check:privacy": "node scripts/check-privacy.cjs",
+    "check": "node --test && node scripts/check-privacy.cjs"
+  },
+  "keywords": ["ima", "memory", "mcp", "agents", "provenance"],
+  "private": true
+}
