@@ -56,14 +56,18 @@ Node.js 22 或更高版本；没有 npm 运行时依赖。
 
 ## WorkBuddy 技能包
 
-本仓库包含 [SKILL.md](SKILL.md)，可通过发行时提供的
-`ima-agent-memory-workbuddy-v0.1.1.zip` 导入 WorkBuddy：技能 → 添加技能 → 上传技能。
+**[下载 v0.1.1 WorkBuddy 技能包](https://github.com/Gibsonchan/ima-agent-memory/releases/download/v0.1.1/ima-agent-memory-workbuddy-v0.1.1.zip)** · [Release 与校验文件](https://github.com/Gibsonchan/ima-agent-memory/releases/latest) · [安装说明](docs/install.md)
+
+本仓库包含 [SKILL.md](SKILL.md)。下载上面的专用技能 ZIP，
+导入 WorkBuddy：技能 → 添加技能 → 上传技能。
 ZIP 根目录直接包含 SKILL.md，并自带运行代码和空白模板；无需访问 GitHub 或 npm install。
 需要使用者环境提供 Node.js 22+。ima 云端模式另需使用者自己的凭证和官方 ima-skill。
 导入不会自动运行初始化或上传数据，使用说明见 [WorkBuddy 接入](references/workbuddy.md)。
 
 自行打包：`node scripts/build-skill.cjs --output <仓库外的ZIP路径>`。
 技能文件和账号/记忆数据分开，升级或卸载技能不删除私有记忆。
+
+v0.1.1 已知云端同步并发修改问题及临时使用方式见 [发行说明](docs/release-notes.md)。
 
 ## 怎样维护这份共享记忆
 

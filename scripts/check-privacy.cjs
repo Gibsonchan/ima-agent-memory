@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { hash, checkSecrets } = require('../lib/events.cjs');
 const root = path.resolve(__dirname, '..');
-const exact = new Set(['.gitignore', '.gitattributes', 'package.json', 'README.md', 'README.en.md', 'SKILL.md', 'LICENSE', 'SECURITY.md', 'CONTRIBUTING.md', '.github/workflows/ci.yml']);
+const exact = new Set(['.gitignore', '.gitattributes', 'package.json', 'README.md', 'README.en.md', 'SKILL.md', 'LICENSE', 'SECURITY.md', 'CONTRIBUTING.md', '.github/workflows/ci.yml', '.github/workflows/release.yml']);
 const allowed = relative => exact.has(relative) || /^(bin|lib|scripts)\/[a-z0-9-]+\.cjs$/.test(relative) || /^test\/[a-z0-9-]+\.test\.cjs$/.test(relative) || /^(docs|references)\/[a-z0-9-]+\.md$/.test(relative) || /^examples\/(event\.json|config\.example\.json|mcp-client\.example\.json|AGENTS-snippet\.md)$/.test(relative) || /^templates\/curated\/(00-entry\.md|01-preferences\.md|projects\/demo\.md)$/.test(relative);
 function files(relative = '') {
   return fs.readdirSync(path.join(root, relative), { withFileTypes: true }).flatMap(item => {
