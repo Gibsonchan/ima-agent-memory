@@ -3,7 +3,7 @@ name: ima-agent-memory
 description: 让 Codex、WorkBuddy、DeepSeek Harness 等 Agent 共享同一份项目记忆，减少换工具时重复交代背景。当用户要求记住项目决定、恢复上下文、查询共享记忆或接入跨 Agent 长期记忆时使用，支持本地 Markdown、可选 ima 同步及 MCP/CLI 接入。普通 ima 笔记与文件管理使用官方 ima 技能。
 license: MIT
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
   runtime: "Node.js 22+"
 ---
 

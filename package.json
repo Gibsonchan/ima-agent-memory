@@ -1,6 +1,6 @@
 {
   "name": "ima-agent-memory",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Give your agents one shared brain: project memory across Codex, WorkBuddy and other configured MCP/CLI clients.",
   "license": "MIT",
   "type": "commonjs",

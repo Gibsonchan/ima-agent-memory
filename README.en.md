@@ -41,9 +41,9 @@ and updates the summary, and another configured agent reads that same summary wh
 it takes over. Startup instructions must request memory reads; other machines see
 cloud changes after synchronization.
 
-**[Download the v0.2.0 WorkBuddy skill](https://github.com/Gibsonchan/ima-agent-memory/releases/download/v0.2.0/ima-agent-memory-workbuddy-v0.2.0.zip)** · [Release and checksums](https://github.com/Gibsonchan/ima-agent-memory/releases/latest).
+**[Download the v0.2.1 WorkBuddy skill](https://github.com/Gibsonchan/ima-agent-memory/releases/download/v0.2.1/ima-agent-memory-workbuddy-v0.2.1.zip)** · [Release and checksums](https://github.com/Gibsonchan/ima-agent-memory/releases/latest).
 
-For WorkBuddy, import the release's `ima-agent-memory-workbuddy-v0.2.0.zip` through
+For WorkBuddy, import the release's `ima-agent-memory-workbuddy-v0.2.1.zip` through
 Skills → Add Skill → Upload Skill. It includes a root-level `SKILL.md`, runtime
 code and empty templates; Node 22+ is still required. Importing it does not run
 initialization or upload data. See [integration notes](references/workbuddy.md).

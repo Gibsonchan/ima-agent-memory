@@ -56,7 +56,7 @@ Node.js 22 或更高版本；没有 npm 运行时依赖。
 
 ## WorkBuddy 技能包
 
-**[下载 v0.2.0 WorkBuddy 技能包](https://github.com/Gibsonchan/ima-agent-memory/releases/download/v0.2.0/ima-agent-memory-workbuddy-v0.2.0.zip)** · [Release 与校验文件](https://github.com/Gibsonchan/ima-agent-memory/releases/latest) · [安装说明](docs/install.md)
+**[下载 v0.2.1 WorkBuddy 技能包](https://github.com/Gibsonchan/ima-agent-memory/releases/download/v0.2.1/ima-agent-memory-workbuddy-v0.2.1.zip)** · [Release 与校验文件](https://github.com/Gibsonchan/ima-agent-memory/releases/latest) · [安装说明](docs/install.md)
 
 本仓库包含 [SKILL.md](SKILL.md)。下载上面的专用技能 ZIP，
 导入 WorkBuddy：技能 → 添加技能 → 上传技能。
