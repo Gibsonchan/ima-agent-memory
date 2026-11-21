@@ -8,7 +8,7 @@ const config = require('../lib/config.cjs');
 const events = require('../lib/events.cjs');
 const { ImaStore } = require('../lib/ima.cjs');
 const fixture = require('../examples/event.json');
-function setup(t) {
+function setup(t, { flattenReadback = false } = {}) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ima-memory-cloud-test-'));
   t.after(() => { assert.ok(path.basename(root).startsWith('ima-memory-cloud-test-')); fs.rmSync(root, { recursive: true, force: true }); });
   config.init(root); const c = { ...config.load(root), knowledge_base_id: 'synthetic-test-kb' };
@@ -24,7 +24,7 @@ function setup(t) {
     if (endpoint.endsWith('get_doc_content')) {
       let content = notes.get(body.note_id).content;
       if (corruptReadback) content = content.replace(/sha256:[a-f0-9]{64}/, 'sha256:' + '0'.repeat(64));
-      return { content };
+      return { content: flattenReadback ? content.replace(/\r?\n/g, '') : content };
     }
     if (endpoint.endsWith('add_knowledge')) {
       if (failLink) { failLink = false; throw new Error('Synthetic link failure'); }
@@ -45,7 +45,7 @@ test('sync preview makes zero API calls', async t => {
 });
 test('all content is preflighted for secrets before the first cloud write', async t => {
   const { store, root, calls } = setup(t);
-  fs.writeFileSync(path.join(root, 'curated', 'zzz.md'), 'sk-' + 'x'.repeat(24));
+  fs.writeFileSync(path.join(root, 'curated', 'projects', 'demo.md'), 'sk-' + 'x'.repeat(24));
   await assert.rejects(store.sync({ apply: true }), /credential/);
   assert.equal(calls.length, 0);
 });
@@ -61,6 +61,14 @@ test('sync reads back documents before publishing CURRENT, and skips unchanged s
   const index = await store.current('demo');
   assert.equal(Object.keys(index.documents).length, 3);
   assert.match(await store.read('curated/projects/demo.md'), /empty template/);
+});
+test('signed manifests and original Markdown survive IMA single-line plain text readback', async t => {
+  const { store, root } = setup(t, { flattenReadback: true });
+  const markdown = '# Project\n\n- 中文 `literal`\n';
+  fs.writeFileSync(path.join(root, 'curated', 'projects', 'demo.md'), markdown);
+  await store.sync({ apply: true });
+  assert.equal((await store.current()).stale, false);
+  assert.equal(await store.read('curated/projects/demo.md'), markdown);
 });
 test('failed linking preserves resumable state and does not advance success watermark', async t => {
   const x = setup(t); x.failNextLink();
@@ -83,12 +91,48 @@ test('an existing lock remains in place after a rejected concurrent sync', async
   assert.equal(fs.readFileSync(lock, 'utf8'), 'synthetic-lock'); assert.equal(calls.length, 0);
 });
 test('cloud candidates are verified, pulled idempotently, and excluded from search by default', async t => {
-  const { store } = setup(t);
+  const { root, store } = setup(t);
   const recorded = await store.record(fixture); assert.equal(recorded.accepted_as_candidate, true);
   await store.pullInbox(); await store.pullInbox(); assert.equal(store.queue()[0].candidates.length, 1);
+  fs.writeFileSync(path.join(root, 'curated', 'private.md'), 'unlisted fixture');
   await store.sync({ apply: true });
+  assert.equal(Object.keys((await store.current()).documents).length, 3);
   assert.equal((await store.search({ query: 'two languages', project: 'demo' })).results.length, 0);
   assert.equal((await store.search({ query: 'two languages', project: 'demo', include_candidates: true })).results.length, 1);
+});
+test('publisher pin can be shared without the signing key, and the verified generation cannot roll back', async t => {
+  const { root, c, store, notes } = setup(t);
+  const first = await store.sync({ apply: true }), previousNotes = new Map(notes);
+  fs.writeFileSync(path.join(root, 'curated', 'projects', 'demo.md'), '# New fixture');
+  const next = await store.sync({ apply: true });
+  assert.ok(next.generation > first.generation);
+  const reader = path.join(root, 'separate-reader'), other = new ImaStore(reader, c, store.api);
+  await assert.rejects(other.current(), /publisher pin/);
+  other.trust.pinPublisher(store.trust.exportPin());
+  assert.equal((await other.current()).generation, next.generation);
+  await assert.rejects(other.sync({ apply: true }), /signing key/);
+  for (const [id, note] of notes) if (note.title.includes(' · CURRENT · ') && !previousNotes.has(id)) notes.delete(id);
+  const restored = await new ImaStore(reader, c, store.api).current();
+  assert.equal(restored.generation, next.generation);
+  assert.equal(restored.stale, true);
+  const signed = store.trust.lastGood();
+  assert.throws(() => store.trust.open({ ...signed, manifest: { ...signed.manifest, generation: next.generation + 1 } }), /signature/);
+});
+test('bad candidates enter quarantine without blocking valid inbox records', async t => {
+  const { store, notes } = setup(t), title = `${store.prefix} · INBOX · synthetic`;
+  notes.set('invalid-fixture', { title, content: 'Unstructured fixture', note_id: 'invalid-fixture' });
+  const event = await store.record(fixture), pulled = await store.pullInbox();
+  assert.equal(pulled.candidates[0].event_id, event.event_id);
+  assert.deepEqual(pulled.quarantined, [{ note_id: 'invalid-fixture', reason: 'invalid_candidate' }]);
+});
+test('a retried candidate submission reuses its known note after a link failure', async t => {
+  const { store, notes, failNextLink } = setup(t), input = { ...fixture, request_id: 'synthetic-request' };
+  failNextLink();
+  await assert.rejects(store.record(input), /Synthetic link failure/);
+  const saved = await store.record(input);
+  assert.deepEqual(await store.record(input), saved);
+  assert.equal(notes.size, 1);
+  await assert.rejects(store.record({ ...input, summary: 'Other fixture' }), /different content/);
 });
 test('search excludes stale snapshots and other projects', async t => {
   const { store, root, c } = setup(t); c.projects.push({ id: 'second', name: 'Second' });

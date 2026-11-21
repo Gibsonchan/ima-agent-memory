@@ -25,6 +25,8 @@ curated/submissions/<project>/<agent>/*.md
 state/reviews.json                  Local review decisions
 state/sync-<target-hash>.json        Resumable cloud state
 state/sync.lock                     Local publisher lock
+state/trust-<target-hash>/           Publisher pin, publisher-only key and verified generations
+state/inbox-quarantine.json         Candidate status for the most recent pull
 ```
 
 每个候选含项目、agent、主题、摘要、来源、类型、证据类型和日期。`evidence_type` 允许 `user_statement`、`observed_result`、`agent_inference`；这是提交方声明，不自动验证。事件 ID 不可用新内容覆盖。
@@ -37,9 +39,11 @@ state/sync.lock                     Local publisher lock
 
 ## 一台维护机，多台读写客户端
 
-从维护机的私有配置中，只传递 namespace、memory_space_id、knowledge_base_id 和项目清单。接收者必须有读取该 ima 数据的权限，并自行配置凭证；仓库公开不代表记忆空间公开。不要复制同步状态当作分布式锁。
+维护机先运行 `sync --apply`，再运行 `trust-export` 导出公开验证信息。通过可信渠道向接收者提供该 JSON、namespace、memory_space_id、knowledge_base_id 和项目清单。其他设备设 backend=ima，使用 `trust-import --file PUBLISHER.json` 固定公钥。接收者需要 IMA 数据访问权限并各自配置凭证。备份维护机的发布状态和签名私钥，公钥变更时通过可信渠道协调各接收端。
 
-其他机器创建自己的私有目录，改成相同空间配置，并设 backend=ima。云端 `record` 先写候选并读回，关联到知识库后才报告成功。维护机 `pull-inbox` 只拉取该空间前缀的结构化候选。已经下载的相同事件可重复拉取；同 ID 不同内容会报错。
+云端 `record` 写入候选并读回，关联到知识库后才报告成功。同一提交者在同一数据目录可用相同的 `request_id` 重试，已有笔记会复用。服务已收到请求而回执丢失时，搜索索引延迟仍可能造成重复。维护机 `pull-inbox` 按空间拉取候选并识别重复；每条格式错误或 ID 内容冲突单独报告。
+
+需要限制某个 MCP 客户端时，在受控的服务启动参数中使用 `serve --project ID --agent SLUG`。这限制该进程的工具可读项目和提交标签。拥有原始文件或 IMA 凭证的进程仍受操作系统或 IMA 自身权限约束。
 
 维护者按项目与主题核实，保存带来源的本机 review，手动更新统一摘要，再运行 sync。Review 不会让原始候选变成正式指令。需要跨设备共享裁决时，把最终决定和来源写入 `curated/decisions/<project>/` 后同步。
 
@@ -50,7 +54,7 @@ state/sync.lock                     Local publisher lock
 - 同步状态只在本机；丢失状态可能生成重复快照，不会删除远端内容。
 - 云端旧快照没有自动清理策略。删除敏感信息时同时处理 ima 笔记、知识库关联、备份以及任何接收过正文的客户端记录。
 - 多台维护机同时发布会竞争 CURRENT。当前版本要求单发布者，不提供分布式锁或冲突合并。
-- 官方笔记搜索存在索引延迟时，新 CURRENT 可能暂时不可检索；稍后重试。不会读取任意不匹配空间的 manifest 作为兜底。
+- 官方笔记搜索存在索引延迟时，`current` 可返回已验证的较早索引并标记 `stale`；正文读取仍需要 IMA 可访问。接收端会保留曾验证的最高代次。
 
 ## 自动维护
 

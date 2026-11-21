@@ -8,6 +8,9 @@ chat exports, note IDs, account configuration and runtime state outside it.
 - Local mode does not load the ima helper or send requests.
 - Cloud mode invokes a separately installed official ima-skill. The API base URL is
   fixed to `https://ima.qq.com`; this project does not ship third-party helper code.
+- Readers pin the maintainer's Ed25519 public key through a trusted channel.
+  Keep the signing key in the maintainer's restricted data directory and back it up privately.
+  Signed revisions establish integrity and publisher identity. IMA access controls govern confidentiality.
 - Review all Markdown before `sync --apply`. All `curated/` Markdown is uploaded,
   including candidates. Heuristic secret patterns do not detect all PII or secrets.
 - Base64 and SHA-256 envelopes detect accidental alteration, not malicious authors.

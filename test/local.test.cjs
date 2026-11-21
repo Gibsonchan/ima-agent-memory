@@ -68,6 +68,18 @@ test('review records sources but never changes canonical summaries or candidates
   assert.equal(store.queue()[0].candidates.find(e => e.event_id === a.event_id).status, 'candidate');
   assert.equal(store.queue()[0].candidates.find(e => e.event_id === b.event_id).review, null);
 });
+test('a project-scoped service restricts document access and uses its bound agent label', async t => {
+  const { root, c } = setup(t);
+  c.projects.push({ id: 'second', name: 'Second project' });
+  fs.writeFileSync(path.join(root, 'curated', 'projects', 'second.md'), '# Separate project');
+  const scoped = new LocalStore(root, c, { project: 'demo', agent: 'bound-agent' });
+  assert.equal(Object.hasOwn((await scoped.current('all')).documents, 'curated/projects/second.md'), false);
+  await assert.rejects(scoped.read('curated/projects/second.md'), /current manifest/);
+  await assert.rejects(scoped.record({ ...fixture, project: 'second', agent: 'bound-agent' }), /Unknown project/);
+  await assert.rejects(scoped.record({ ...fixture, agent: 'different-agent' }), /configured identity/);
+  const saved = await scoped.record({ ...fixture, agent: undefined });
+  assert.match(saved.document, /\/bound-agent\//);
+});
 test('traversal, absolute paths and symlinked document trees are rejected', async t => {
   const { root, store } = setup(t);
   for (const p of ['../config.json', '/etc/passwd', 'curated/../config.json', 'curated\\projects\\demo.md', 'curated/./projects/demo.md']) assert.throws(() => config.safePath(root, p));

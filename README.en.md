@@ -41,17 +41,16 @@ and updates the summary, and another configured agent reads that same summary wh
 it takes over. Startup instructions must request memory reads; other machines see
 cloud changes after synchronization.
 
-**[Download the v0.1.1 WorkBuddy skill](https://github.com/Gibsonchan/ima-agent-memory/releases/download/v0.1.1/ima-agent-memory-workbuddy-v0.1.1.zip)** · [Release and checksums](https://github.com/Gibsonchan/ima-agent-memory/releases/latest).
+**[Download the v0.2.0 WorkBuddy skill](https://github.com/Gibsonchan/ima-agent-memory/releases/download/v0.2.0/ima-agent-memory-workbuddy-v0.2.0.zip)** · [Release and checksums](https://github.com/Gibsonchan/ima-agent-memory/releases/latest).
 
-For WorkBuddy, import the release's `ima-agent-memory-workbuddy-v0.1.1.zip` through
+For WorkBuddy, import the release's `ima-agent-memory-workbuddy-v0.2.0.zip` through
 Skills → Add Skill → Upload Skill. It includes a root-level `SKILL.md`, runtime
 code and empty templates; Node 22+ is still required. Importing it does not run
 initialization or upload data. See [integration notes](references/workbuddy.md).
 Build it with `node scripts/build-skill.cjs --output <ZIP-outside-repository>`.
 
-Known v0.1.1 limitation: edits to local documents during cloud synchronization can
-produce a manifest/body revision mismatch. Pause local curated-document edits while
-syncing. See [release notes](docs/release-notes.md) and [installation guide](docs/install.md).
+To upgrade an existing cloud space, publish a signed index from the maintainer
+before distributing the public publisher pin to readers. See the [installation guide](docs/install.md).
 
 ## Local quick start
 
@@ -105,13 +104,12 @@ node bin/ima-agent-memory.cjs sync
 node bin/ima-agent-memory.cjs sync --apply
 ```
 
-The first command is an offline preview. `--apply` uploads all Markdown under the
-private home's `curated/`, including candidates. Review it first. Common secret
-patterns are blocked, but heuristic checks cannot guarantee privacy. Documents
+The first command previews the entry guide, preferences, project summaries and
+decisions offline. `--apply` checks common secret patterns and uploads the listed documents. Documents
 include readable text and a checksummed Base64 payload. Base64 is not encryption.
 Split documents larger than 64 KiB; ima may impose additional limits.
 
-Snapshots are hash-deduplicated and read back before CURRENT is published last.
+Snapshots are hash-deduplicated and read back before a signed CURRENT is published.
 Failures preserve resumable local state without advancing the success watermark.
 Old snapshots are retained, and deleting local files does not erase cloud history.
 Retries after an ambiguous network failure may create duplicate snapshots.
@@ -123,8 +121,9 @@ canonical summaries, then syncs again. Local reviews require a source and note;
 they neither update summaries nor synchronize review status automatically.
 
 To share a space, use the same namespace, memory-space UUID, knowledge-base ID and
-project list, with separately provisioned credentials. Use **one publishing
-maintainer**: locks are local to one data home, not distributed across machines.
+project list, with separately provisioned credentials. One maintainer runs `trust-export`.
+Other machines receive that public JSON through a trusted channel and import it with
+`trust-import --file PUBLISHER.json`. The signing key stays on the maintainer.
 
 ## Checks
 

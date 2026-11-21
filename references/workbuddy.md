@@ -3,7 +3,7 @@
 ## 导入这个技能
 
 在 WorkBuddy 的技能页面选择「添加技能 → 上传技能」，选择
-`ima-agent-memory-workbuddy-v0.1.1.zip`，完成客户端的安全检查后导入。
+`ima-agent-memory-workbuddy-v0.2.0.zip`，完成客户端的安全检查后导入。
 不同版本的界面标签可能略有不同。
 
 导入 ZIP 只安装文件，不会运行初始化或上传任何记忆。第一次调用时，
@@ -43,15 +43,16 @@ node scripts/memory.cjs sync
 node scripts/memory.cjs sync --apply
 ```
 
-第二条会真正上传数据，只在用户要求同步的范围内执行。先检查全部
-curated/ Markdown，包括候选。每个文档最多 64 KiB；服务限制仍以 ima
-响应为准。写入后读回校验，最后发布 CURRENT，失败不推进成功水位。
+第二条上传预览中列出的入口、偏好、项目摘要和决策。每个文档最多 64 KiB，
+服务限制以 ima 响应为准。写入后读回校验，最后发布签名 CURRENT。
 如果 helper 要求更新或 API 报错，解决该错误后再重试，不宣称已同步。
 
 首次同步成功后设置 backend=ima，重启使用该配置的 MCP 服务。
 维护机运行 pull-inbox，再用 queue 核对云端候选。
 多个客户端共用相同 namespace、memory_space_id、knowledge_base_id
-和项目清单，分别配置凭证。只有一台维护机发布正式快照；本机锁不跨设备。
+和项目清单，分别配置凭证。维护机执行 `trust-export`，其他设备通过可信渠道取得
+公开 JSON 后执行 `trust-import --file PUBLISHER.json`。仅维护机保管签名私钥并发布快照。
+旧版本云端接入先由升级后的维护机发布签名索引，再升级其他设备并导入公钥。
 旧云端快照不会自动删除，本地删除文件不等于删除历史。
 
 ## 公开上架与本地导入的区别

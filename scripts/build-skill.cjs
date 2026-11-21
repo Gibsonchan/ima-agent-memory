@@ -8,7 +8,7 @@ const { hash } = require('../lib/events.cjs');
 const { check } = require('./check-privacy.cjs');
 const root = path.resolve(__dirname, '..');
 const version = require('../package.json').version;
-const selected = relative => ['SKILL.md', 'LICENSE', 'SECURITY.md', 'scripts/memory.cjs', 'scripts/doctor.cjs', 'examples/event.json', 'examples/AGENTS-snippet.md'].includes(relative) || /^(bin|lib|templates|references)\//.test(relative);
+const selected = relative => ['SKILL.md', 'LICENSE', 'SECURITY.md', 'package.json', 'scripts/memory.cjs', 'scripts/doctor.cjs', 'examples/event.json', 'examples/AGENTS-snippet.md'].includes(relative) || /^(bin|lib|templates|references)\//.test(relative);
 const crcTable = Uint32Array.from({ length: 256 }, (_, n) => { for (let k = 0; k < 8; k++) n = n & 1 ? 0xedb88320 ^ (n >>> 1) : n >>> 1; return n >>> 0; });
 function crc32(bytes) { let crc = 0xffffffff; for (const b of bytes) crc = crcTable[(crc ^ b) & 255] ^ (crc >>> 8); return (crc ^ 0xffffffff) >>> 0; }
 function zip(entries) {

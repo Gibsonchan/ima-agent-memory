@@ -23,9 +23,10 @@ test('MCP subprocess handshake, tools, source validation and candidate separatio
   r = await request('tools/list', {}); assert.equal(r.result.tools.length, 4);
   r = await call('memory_search', { query: 'test' }); assert.equal(r.result.isError, true);
   r = await call('memory_record_event', { ...fixture, source: '' }); assert.equal(r.result.isError, true);
-  r = await call('memory_record_event', fixture); assert.equal(JSON.parse(r.result.content[0].text).accepted_as_candidate, true);
+  r = await call('memory_record_event', fixture); const saved = JSON.parse(r.result.content[0].text); assert.equal(saved.accepted_as_candidate, true);
   r = await call('memory_search', { query: 'two languages', project: 'demo' }); assert.equal(JSON.parse(r.result.content[0].text).results.length, 0);
-  r = await call('memory_search', { query: 'two languages', project: 'demo', include_candidates: true }); assert.equal(JSON.parse(r.result.content[0].text).results.length, 1);
+  r = await call('memory_search', { query: 'two languages', project: 'demo', include_candidates: true }); assert.equal(r.result.isError, true);
+  r = await call('memory_read', { document: saved.document }); assert.equal(r.result.isError, true);
   r = await call('memory_read', { document: '../config.json' }); assert.equal(r.result.isError, true);
   r = await call('memory_search', { query: 'test', project: 'demo', include_candidates: 'true' }); assert.equal(r.result.isError, true);
   r = await call('memory_current', { project: 'demo', extra: true }); assert.equal(r.result.isError, true);

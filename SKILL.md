@@ -3,7 +3,7 @@ name: ima-agent-memory
 description: 让 Codex、WorkBuddy、DeepSeek Harness 等 Agent 共享同一份项目记忆，减少换工具时重复交代背景。当用户要求记住项目决定、恢复上下文、查询共享记忆或接入跨 Agent 长期记忆时使用，支持本地 Markdown、可选 ima 同步及 MCP/CLI 接入。普通 ima 笔记与文件管理使用官方 ima 技能。
 license: MIT
 metadata:
-  version: "0.1.1"
+  version: "0.2.0"
   runtime: "Node.js 22+"
 ---
 
@@ -50,8 +50,8 @@ node scripts/memory.cjs search "keyword" --project demo
 ```
 
 将 demo 替换为实际已登记的项目。需要具体证据时才搜索，不默认读全库。
-跨项目搜索显式传 `--project all`；候选默认不在搜索结果内，核对候选时才加
-`--include-candidates`。不确定项目且无法从已有上下文判断时，向用户询问。
+跨项目搜索显式传 `--project all`。核对候选时运行 `queue`，或在维护机上用 CLI 的
+`--include-candidates` 查已经下载的记录。MCP 的日常读写入口只返回正式文档。
 
 ## 提交与核对
 
@@ -78,9 +78,9 @@ JSON 文件放在私有工作目录，不能保存到技能或公开仓库中。
 [references/workbuddy.md](references/workbuddy.md) 的对应部分。
 本包不包含官方 ima-skill 或任何账号凭证；只把凭证交给官方 ima 端点。
 
-`sync` 只预览；`sync --apply` 会上传私有目录 curated/ 下全部 Markdown，
-包括候选。只有在用户要求同步这些数据的授权范围内执行写入；安装技能、
-查找记忆或生成接入配置不会自动上传。已获授权时无需重复确认。
+`sync` 预览将发布的入口、偏好、项目摘要与决策。`sync --apply` 上传这些文档并
+签名发布 `CURRENT`。候选通过独立的 `record` 和 `pull-inbox` 流转。升级旧云端
+空间时让维护机先发一版签名索引，再向其他设备分发公开验证信息，步骤见上述接入说明。
 
 ## 记忆的边界
 

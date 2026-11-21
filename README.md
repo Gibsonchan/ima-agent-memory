@@ -56,7 +56,7 @@ Node.js 22 或更高版本；没有 npm 运行时依赖。
 
 ## WorkBuddy 技能包
 
-**[下载 v0.1.1 WorkBuddy 技能包](https://github.com/Gibsonchan/ima-agent-memory/releases/download/v0.1.1/ima-agent-memory-workbuddy-v0.1.1.zip)** · [Release 与校验文件](https://github.com/Gibsonchan/ima-agent-memory/releases/latest) · [安装说明](docs/install.md)
+**[下载 v0.2.0 WorkBuddy 技能包](https://github.com/Gibsonchan/ima-agent-memory/releases/download/v0.2.0/ima-agent-memory-workbuddy-v0.2.0.zip)** · [Release 与校验文件](https://github.com/Gibsonchan/ima-agent-memory/releases/latest) · [安装说明](docs/install.md)
 
 本仓库包含 [SKILL.md](SKILL.md)。下载上面的专用技能 ZIP，
 导入 WorkBuddy：技能 → 添加技能 → 上传技能。
@@ -67,7 +67,7 @@ ZIP 根目录直接包含 SKILL.md，并自带运行代码和空白模板；无�
 自行打包：`node scripts/build-skill.cjs --output <仓库外的ZIP路径>`。
 技能文件和账号/记忆数据分开，升级或卸载技能不删除私有记忆。
 
-v0.1.1 已知云端同步并发修改问题及临时使用方式见 [发行说明](docs/release-notes.md)。
+升级已有云端空间时，先由维护机发布签名索引，再向其他设备分发公钥。见 [发行说明](docs/release-notes.md)。
 
 ## 怎样维护这份共享记忆
 
@@ -117,7 +117,7 @@ node bin/ima-agent-memory.cjs mcp-config
 | --- | --- |
 | `memory_current` | 当前文档索引，可按项目过滤 |
 | `memory_read` | 读取索引中的一个文档路径 |
-| `memory_search` | 搜索当前版本，默认排除候选 |
+| `memory_search` | 搜索已整理的当前版本 |
 | `memory_record_event` | 提交带来源、等待核对的候选 |
 
 提供本机 stdio 服务，支持 `2024-11-05` 至 `2025-11-25` 的初始化式 MCP 协议；未实现 HTTP 服务或 `2026-07-28` 的新协议流程。不对任意客户端的兼容性作保证。
@@ -136,13 +136,13 @@ node bin/ima-agent-memory.cjs sync
 node bin/ima-agent-memory.cjs sync --apply
 ```
 
-`sync` 默认只列计划，不联网；`--apply` 会把本地 `curated/` 下的全部 Markdown（包括候选）上传到指定 ima。同步前检查常见密钥模式；这不能检测所有隐私。请先自行审阅。正文会同时保存可读文本和用于完整性校验的 Base64 封装；Base64 **不是加密**。单个本地文档最多 64 KiB，实际服务限制仍以 ima 为准。
+`sync` 离线预览待发布的入口、偏好、项目摘要和决策。`--apply` 先检查这些文件的常见密钥模式，再将它们上传到指定 ima。正文含可读文本和供完整性校验的 Base64 封装；Base64 **不是加密**。单个本地文档最多 64 KiB，实际服务限制以 ima 为准。
 
-同步按哈希跳过未变文档，写入后读回校验，最后发布 CURRENT。中断后利用本机状态继续；失败不会推进成功水位。旧快照保留，移除本地文件不会删除云端历史。请求已经送达但响应丢失时，重试仍可能产生重复快照。
+同步按哈希跳过未变文档，写入后读回校验，最后发布签名 `CURRENT`。读取时校验签名和正文。中断后利用本机状态继续，失败不推进成功水位。旧快照保留。请求已送达但响应丢失时，重试可能产生重复快照。
 
 首次同步成功后，设 `backend: "ima"`，重新启动 MCP 客户端，读取与候选提交会使用 ima。维护者运行 `pull-inbox` 下载候选到本机，之后运行 `queue` 核对。
 
-两台机器共享时，要使用相同的 `namespace`、`memory_space_id`、`knowledge_base_id` 和项目清单，各自配置凭证。只由**一台维护机**发布正式快照；其他机器可以读和提交候选。不同数据目录的锁不互通，不能防止两台维护机同时覆盖 CURRENT。更多说明见 [接入与维护](docs/integration.md)。
+多台机器共享时，使用相同的 `namespace`、`memory_space_id`、`knowledge_base_id` 和项目清单，各自配置凭证。维护机用 `trust-export` 导出公开信息，通过可信渠道交给其他机器，再用 `trust-import --file PUBLISHER.json` 固定公钥。只由**一台维护机**保管私钥及发布快照。更多说明见 [接入与维护](docs/integration.md)。
 
 ## 核对候选
 

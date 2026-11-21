@@ -1,10 +1,10 @@
-# 安装 ima-agent-memory v0.1.1
+# 安装 ima-agent-memory v0.2.0
 
 让你的 Agent，共享同一个大脑。
 
 ## 下载和导入 WorkBuddy
 
-1. 从本 Release 下载 `ima-agent-memory-workbuddy-v0.1.1.zip`，这是技能安装包。
+1. 从本 Release 下载 `ima-agent-memory-workbuddy-v0.2.0.zip`，这是技能安装包。
 2. 在 WorkBuddy 中选择「技能 → 添加技能 → 上传技能」，选择这个 ZIP，并完成客户端的安全检查。
 3. 首次调用可说：“使用 ima-agent-memory 检查环境，初始化一个本地 demo 项目，再记录一条虚构决定并搜索验证。”
 
@@ -13,7 +13,7 @@
 通用代码、空白模板和虚构示例均在包内；私有记忆应保存在技能目录外。
 
 GitHub 自动提供的 Source code ZIP 是源码归档。WorkBuddy 导入请选上面带
-`workbuddy-v0.1.1.zip` 的专用附件，其根目录直接包含 SKILL.md。
+`workbuddy-v0.2.0.zip` 的专用附件，其根目录直接包含 SKILL.md。
 
 ## 校验下载
 
@@ -22,7 +22,7 @@ GitHub 自动提供的 Source code ZIP 是源码归档。WorkBuddy 导入请选�
 例如 PowerShell：
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath .\ima-agent-memory-workbuddy-v0.1.1.zip
+Get-FileHash -Algorithm SHA256 -LiteralPath .\ima-agent-memory-workbuddy-v0.2.0.zip
 ```
 
 ## 接入其他 Agent 或 ima
@@ -35,11 +35,16 @@ ima 云端模式另需使用者自己的官方 ima-skill、OpenAPI 凭证和知�
 
 完整说明：https://github.com/Gibsonchan/ima-agent-memory
 
-## 当前验证范围与已知问题
+## 从 v0.1.1 升级云端模式
+
+在维护机保留原记忆目录，升级技能后执行 `sync --apply` 发布签名索引。
+在维护机运行 `trust-export`，将其 JSON 输出通过可信渠道传给其他设备。
+其他设备升级后运行 `trust-import --file PUBLISHER.json` 并重启 MCP 连接。
+这些命令都通过 `node scripts/memory.cjs` 调用。本地模式使用原记忆目录直接升级。
+
+## 当前验证范围
 
 已验证本地 CLI、MCP 协议交互、ZIP 解压运行及 Windows/Linux CI。
 各客户端端到端接入、WorkBuddy 界面导入与 SkillHub 审核仍需实测。
 
-已知：云端同步期间其他进程修改本地文档，可能导致索引与正文版本不一致。
-v0.1.1 尚未修复此并发问题；使用 sync --apply 时，应暂停修改本地 curated 文档。
-本地记忆模式可用于先体验。新候选仍需维护者核对归并后进入统一摘要。
+云端的签名校验、候选隔离和同步恢复使用模拟服务验证。新候选由维护者核对后进入统一摘要。
